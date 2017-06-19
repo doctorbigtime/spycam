@@ -1,0 +1,63 @@
+<html>
+<head>
+<script>
+var docElem = document.documentElement;
+var barWidth = Math.max(docElem.clientWidth/20.0, 20);
+var barHeight = Math.max(docElem.clientHeight - 50, 50);
+var barX = 10
+var barY = 10
+</script>
+<canvas id="myCanvas"
+    style="border:1px solid #d3d3d3;"
+    onMouseMove="print_coord(event)" 
+    onMouseOut="clear_coord()">
+Your browser does not support the canvas element.
+</canvas>
+<div id="xycoord" 
+    style="position: absolute; background-color: coral; color: white;">
+</div>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+canvas.width = barWidth + 20;
+canvas.height = barHeight + 20;
+
+function print_coord(e)
+{
+    x = e.clientX;
+    y = e.clientY - 10;
+    if(y < barY || y > barHeight + barY)
+        return clear_coord();
+    pct = (y - barY)/barHeight;
+    xycoord = document.getElementById("xycoord");
+    xycoord.style.top = y;
+    xycoord.style.left = (barWidth + 25) + "px";
+    xycoord.innerHTML = "Coord: (" + x + ", " + y + " [" + (pct*100.0).toFixed(2) + "%])";
+}
+function clear_coord()
+{
+    document.getElementById("xycoord").innerHTML = "";
+}
+//var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+var grd = ctx.createLinearGradient(0,0,0,barHeight);
+grd.addColorStop(0, "#FFCC00")
+grd.addColorStop(1, "#FFCCFF")
+
+ctx.fillStyle = grd;
+ctx.fillRect(barX,barY,barWidth,barHeight);
+
+// write heigh/width
+e = document.documentElement;
+ctx.save();
+ctx.rotate(Math.PI/2);
+ctx.font = "18px Arial";
+//ctx.textAlign = "center";
+ctx.fillStyle = "black";
+ctx.fillText("width: " + e.clientWidth + " height: " + e.clientHeight
+            , 100, -20);
+ctx.restore();
+</script>
+</head>
+</html>
