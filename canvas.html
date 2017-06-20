@@ -6,6 +6,43 @@ var barWidth = Math.max(docElem.clientWidth/20.0, 20);
 var barHeight = Math.max(docElem.clientHeight - 50, 50);
 var barX = 10
 var barY = 10
+
+
+function GET(url, callback) 
+{
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200)
+            callback(req.responseText);
+    }
+    req.open("GET", url, true);
+    req.send(null);
+    //return req.responseText;
+}
+
+function got_json(text)
+{
+    var json = JSON.parse(text);
+    alert(json);
+}
+GET("http://fortas.org/dates.json", function (text) {
+    var json = JSON.parse(text);
+    alert(json.dates);
+});
+
+// random dates.
+var d = []
+for(h = 9; h < 16; ++h)
+    d[h-9] = '2017-06-19 ' + h + ':00:00 EST';
+var dates = []
+for(i = 0; i < d.length; ++i)
+    dates[i] = new Date(d[i])
+
+function pctToDate(pct) {
+    var index = parseInt(pct * dates.length);
+    return dates[index];
+}
+
 </script>
 <canvas id="myCanvas"
     style="border:1px solid #d3d3d3;"
@@ -32,7 +69,9 @@ function print_coord(e)
     xycoord = document.getElementById("xycoord");
     xycoord.style.top = y;
     xycoord.style.left = (barWidth + 25) + "px";
-    xycoord.innerHTML = "Coord: (" + x + ", " + y + " [" + (pct*100.0).toFixed(2) + "%])";
+    text = "Coord: (" + x + ", " + y + " [" + (pct*100.0).toFixed(2) + "%] :: " +
+        pctToDate(pct);
+    xycoord.innerHTML = text;
 }
 function clear_coord()
 {
