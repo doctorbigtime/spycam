@@ -17,26 +17,19 @@ function GET(url, callback)
     }
     req.open("GET", url, true);
     req.send(null);
-    //return req.responseText;
 }
 
-function got_json(text)
-{
-    var json = JSON.parse(text);
-    alert(json);
-}
+var dates = []
+
 GET("http://fortas.org/dates.json", function (text) {
     var json = JSON.parse(text);
-    alert(json.dates);
+    alert("got dates");
+
+    for(i = 0; i < json.dates.length; ++i)
+        dates[i] = new Date(json.dates[i])
 });
 
 // random dates.
-var d = []
-for(h = 9; h < 16; ++h)
-    d[h-9] = '2017-06-19 ' + h + ':00:00 EST';
-var dates = []
-for(i = 0; i < d.length; ++i)
-    dates[i] = new Date(d[i])
 
 function pctToDate(pct) {
     var index = parseInt(pct * dates.length);
