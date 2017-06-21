@@ -27,7 +27,6 @@ GET("/dates.json", function (text) {
 
     for(i = 0; i < json.dates.length; ++i)
         dates[i] = new Date(json.dates[i])
-    alert("got dates:" + dates);
 });
 
 // random dates.
@@ -52,30 +51,48 @@ function dateToFilename(date)
                    + zeroPad(date.getMinutes(),2) + zeroPad(date.getSeconds(),2)
                    // TODO:
                    + '-00.jpg';
-    filename = '/spycam/' + filename;
-    alert('Date: ' + date + ' -> ' + filename);
     return filename;
 }
 
 </script>
-<canvas id="myCanvas"
-    style="border:1px solid #d3d3d3;"
-    onMouseMove="print_coord(event)" 
-    onMouseOut="clear_coord()">
-Your browser does not support the canvas element.
-</canvas>
-<div id="xycoord" 
-    style="position: absolute; background-color: coral; color: white;">
-</div>
-<div id="thumb" 
-    style="position: absolute; background-color: black; color: white;">
-    <img id="thumbnail" src="">
+<div style="width=: 100%">
+    <canvas id="myCanvas"
+        style="border:1px solid #d3d3d3;"
+        onMouseMove="print_coord(event)" 
+        onMouseOut="clear_coord()"
+        onClick="show_image(event)"
+        >
+    Your browser does not support the canvas element.
+    </canvas>
+    <div id="xycoord" 
+        style="position: absolute; background-color: coral; color: white;">
+    </div>
+    <div id="thumb" 
+        style="position: absolute; background-color: black; color: white;">
+        <img id="thumbnail" src="">
+    </div>
+
+    <div id="image"
+        style="float: right; height: 500px; width: 700px; background-color: black; color: white;">
+        <img id="big_image" src="">
+    </div>
 </div>
 
 <script>
 var canvas = document.getElementById("myCanvas");
 canvas.width = barWidth + 20;
 canvas.height = barHeight + 20;
+
+function show_image(e)
+{
+    x = e.clientX;
+    y = e.clientY - 10;
+    pct = (y - barY)/barHeight;
+
+    image = document.getElementById("big_image");
+    when = pctToDate(pct);
+    image.src = '/picture/' + dateToFilename(when);
+}
 
 function print_coord(e)
 {
@@ -96,7 +113,7 @@ function print_coord(e)
     thumb.style.top = y + 20;
     thumb.style.left = (barWidth + 30);
     nail = document.getElementById("thumbnail");
-    nail.src = dateToFilename(date);
+    nail.src = '/thumb/' + dateToFilename(date);
 }
 function clear_coord()
 {
