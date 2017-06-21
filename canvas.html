@@ -21,12 +21,13 @@ function GET(url, callback)
 
 var dates = []
 
-GET("http://fortas.org/dates.json", function (text) {
+//GET("http://fortas.org/dates.json", function (text) {
+GET("/dates.json", function (text) {
     var json = JSON.parse(text);
-    alert("got dates");
 
     for(i = 0; i < json.dates.length; ++i)
         dates[i] = new Date(json.dates[i])
+    alert("got dates:" + dates);
 });
 
 // random dates.
@@ -34,6 +35,26 @@ GET("http://fortas.org/dates.json", function (text) {
 function pctToDate(pct) {
     var index = parseInt(pct * dates.length);
     return dates[index];
+}
+
+function zeroPad(n, len)
+{
+    if((''+n).length > len) return ''+n;
+    var zeros = '';
+    for(i = 0; i < len; ++i) zeros += '0';
+    return (zeros + n).slice(-len);
+}
+
+function dateToFilename(date)
+{
+    var filename = zeroPad(date.getFullYear(),4) + zeroPad(date.getMonth()+1,2)
+                   + zeroPad(date.getDate(),2) + zeroPad(date.getHours(),2)
+                   + zeroPad(date.getMinutes(),2) + zeroPad(date.getSeconds(),2)
+                   // TODO:
+                   + '-00.jpg';
+    filename = '/spycam/' + filename;
+    alert('Date: ' + date + ' -> ' + filename);
+    return filename;
 }
 
 </script>
@@ -45,6 +66,10 @@ Your browser does not support the canvas element.
 </canvas>
 <div id="xycoord" 
     style="position: absolute; background-color: coral; color: white;">
+</div>
+<div id="thumb" 
+    style="position: absolute; background-color: black; color: white;">
+    <img id="thumbnail" src="">
 </div>
 
 <script>
@@ -62,15 +87,21 @@ function print_coord(e)
     xycoord = document.getElementById("xycoord");
     xycoord.style.top = y;
     xycoord.style.left = (barWidth + 25) + "px";
-    text = "Coord: (" + x + ", " + y + " [" + (pct*100.0).toFixed(2) + "%] :: " +
-        pctToDate(pct);
+
+    var date = pctToDate(pct);
+    text = "Coord: (" + x + ", " + y + " [" + (pct*100.0).toFixed(2) + "%] :: " + date;
     xycoord.innerHTML = text;
+
+    thumb = document.getElementById("thumb");
+    thumb.style.top = y + 20;
+    thumb.style.left = (barWidth + 30);
+    nail = document.getElementById("thumbnail");
+    nail.src = dateToFilename(date);
 }
 function clear_coord()
 {
     document.getElementById("xycoord").innerHTML = "";
 }
-//var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
 var grd = ctx.createLinearGradient(0,0,0,barHeight);
