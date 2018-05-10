@@ -5,8 +5,10 @@ import bottle
 import datetime
 import functools32
 
+#static_dir = os.path.join(os.path.dirname(__file__), 'static')
+#spycam_dir = os.path.join(os.path.dirname(__file__), 'pix')
+spycam_dir = '/export/spycam/'
 static_dir = os.path.join(os.path.dirname(__file__), 'static')
-spycam_dir = os.path.join(os.path.dirname(__file__), 'pix')
 if len(sys.argv) > 1 and os.path.isdir(sys.argv[1]):
     spycam_dir = sys.argv[1]
 
